@@ -36,7 +36,7 @@ class World:
 		# Humans
 		self.humans = []
 		for i in range(nb_humans_start):
-			self.humans.append(Human(self,self.idx))
+			self.create_human(Human(self,self.idx))
 			self.idx+=1
 
 		# water
@@ -53,12 +53,14 @@ class World:
 
 	def create_human(self,human):
 		self.humans.append(human)
-		self.board['humans'][human.x,human.y]+=1
+		print 'create : '+str(human.x)+' '+str(human.y)
+		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
 	def do(self):
+	
 		if debug:
-			print len(self.humans)
+			print str(len(self.humans))+' '+str(np.sum(self.board['humans']))
 		# Create food
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
@@ -69,7 +71,7 @@ class World:
 			h.stats[PV]-=1
 			if h.stats[PV]<=0:
 				to_remove.append(h)
-				
+
 			else:
 				h.do()
 

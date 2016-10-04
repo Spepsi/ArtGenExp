@@ -27,13 +27,7 @@ proba_rock = 0.05
 idx = 0L
 
 debug = True
-
-
 world = World(100,100)
-
-
-
-
 
 
 

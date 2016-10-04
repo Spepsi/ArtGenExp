@@ -57,7 +57,7 @@ def draw(fenetre, world):
 				for j in range(len(board[key][0])):
 					if board[key][i,j]>0:
 						for k in range(int(board[key][i,j])):
-							print "philippe"
+							
 							xrand = i*sizeCaseX + random.random()*sizeCaseX
 							yrand = j*sizeCaseY + random.random()*sizeCaseY
 							pygame.draw.rect(fenetre,dicColor[key],[xrand,yrand,5,5])
