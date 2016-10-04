@@ -74,6 +74,7 @@ class World:
 
 		for h in to_remove:
 			self.humans.remove(h)
+			self.board['humans'][h.x,h.y]-=1
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):

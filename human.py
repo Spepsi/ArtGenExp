@@ -3,7 +3,7 @@ import random
 
 
 nb_cells_visible = 80
-nb_stats = 4
+nb_stats = 5
 nb_ressources = 6
 proba_mutation = 0.02
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
@@ -120,10 +120,14 @@ class Human:
 			for h in self.world.humans:
 				if h.x==self.x and h.y == self.y and self.idx!=h.idx:
 					humans.append(h)
+			assert len(humans)==self.world.board['humans'][self.x,self.y] -1 , 'Bad update ...'+str(len(humans))+' '+str(self.world.board['humans'][self.x,self.y] -1)
 			# Choose human at random
 			partner = random.choice(humans)
 			self.world.create_human(Human(self.world,self.world.idx,self,partner))
 			self.world.idx += 1
+			
+			
+
 
 	def eat(self):
 		# Remove food from board
