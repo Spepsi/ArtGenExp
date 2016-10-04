@@ -115,11 +115,13 @@ class World:
 						if np.random.random()<p:
 							self.board["food"][i,j] += 1
 		for i in range(sizeX):
-			self.board['water'][i,0] = 1
-			self.board['water'][i,sizeY-1] = 1
-		for j in range(sizeY):
-			self.board['water'][0,j] = 1
-			self.board['water'][sizeX-1,j] = 1
+			for j in range(6):
+				self.board['water'][i,j] = 1
+				self.board['water'][i,sizeY-j] = 1
+		for i in range(6):
+			for j in range(sizeY):
+				self.board['water'][i,j] = 1
+				self.board['water'][sizeX-i,j] = 1
 
 		# food
 		# rock
