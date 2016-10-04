@@ -67,7 +67,7 @@ class World:
 		to_remove = []
 		for idx,h in enumerate(self.humans):
 			h.stats[PV]-=1
-			if h.stats[PV]<=0:
+			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
 				to_remove.append(h)
 				print 'die'
 			else:

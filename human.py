@@ -106,11 +106,14 @@ class Human:
 
 	def move(self,output):
 		self.world.board['humans'][self.x,self.y]-=1
+		newx = self.x
+		newy = self.y
 		if np.abs(output[0])>np.abs(output[1]):
-			
-			self.x = self.x + (np.sign(output[0]))
+			newx = self.x + (np.sign(output[0]))
 		else:
-			self.y = self.y + (np.sign(output[1]))
+			newy = self.y + (np.sign(output[1]))
+		if self.world.board['rock'][newx,newy]==0:
+			self.x, self.y = newx, newy
 		self.world.board['humans'][self.x,self.y]+=1
 
 	def fuck(self):
