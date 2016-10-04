@@ -58,7 +58,7 @@ class World:
 
 	def create_human(self,human):
 		self.humans.append(human)
-		print 'born'	
+			
 		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
