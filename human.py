@@ -102,8 +102,7 @@ class Human:
 
 	def move(self,output):
 		self.world.board['humans'][self.x,self.y]-=1
-		if np.abs(output[0])>np.abs(output[1]):
-			
+		if np.abs(output[0])>np.abs(output[1]):	
 			self.x = self.x + (np.sign(output[0]))
 		else:
 			self.y = self.y + (np.sign(output[1]))
@@ -118,13 +117,12 @@ class Human:
 				if h.x==self.x and h.y == self.y and self.idx!=h.idx:
 					humans.append(h)
 			assert len(humans)==self.world.board['humans'][self.x,self.y] -1 , 'Bad update ...'+str(len(humans))+' '+str(self.world.board['humans'][self.x,self.y] -1)
+			
 			# Choose human at random
 			partner = random.choice(humans)
 			self.world.create_human(Human(self.world,self.world.idx,self,partner))
 			self.world.idx += 1
 			
-			
-
 
 	def eat(self):
 		# Remove food from board
