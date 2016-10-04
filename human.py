@@ -141,5 +141,4 @@ class Human:
 		# Remove food from board
 		if self.world.board['humans'][self.x,self.y] > 0:
 			self.stats[PV] = (self.stats[PV]+self.stats[PVMAX])/2
-			self.world.board['humans'][self.x,self.y] -= 1 
 		

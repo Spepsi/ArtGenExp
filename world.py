@@ -17,6 +17,8 @@ PVMAX = 0
 STAMINA = 1
 SIGHT = 2
 PV = 3
+AGE = 4
+
 class World:
 	def __init__(self,sizeX,sizeY):
 		self.idx = 0L
@@ -57,8 +59,7 @@ class World:
 		# rock
 
 	def create_human(self,human):
-		self.humans.append(human)
-			
+		self.humans.append(human)	
 		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
