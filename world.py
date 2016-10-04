@@ -64,9 +64,7 @@ class World:
 
 
 	def do(self):
-	
-		if debug:
-			print str(len(self.humans))+' '+str(np.sum(self.board['humans']))
+		print(np.sum(self.board['humans']))
 		# Create food
 		proba_new_food = 0.5
 		if np.random.random()<proba_new_food:
@@ -97,7 +95,7 @@ class World:
 
 			else:
 				h.do()
-		print 'dying : '+str(len(to_remove))
+
 		for h in to_remove:
 			self.humans.remove(h)
 			self.board['humans'][h.x,h.y]-=1

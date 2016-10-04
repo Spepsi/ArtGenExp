@@ -38,7 +38,7 @@ def merge_dna(parent1,parent2):
 			if j==SIGHT:
 				stats[j] = int(4*np.random.random())
 			if j==PVMAX:
-				stats[j] = int(100*np.random.random())
+				stats[j] = int(1*np.random.random())
 
 		else:
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
@@ -59,7 +59,7 @@ class Human:
 			self.dna = np.random.randn(*shape_dna)
 			self.stats = np.random.randn(nb_stats)
 			
-			self.stats[PVMAX] = int(100*np.random.random())
+			self.stats[PVMAX] = int(30*np.random.random())
 			
 			self.stats[SIGHT] = int(4*np.random.random())
 
@@ -139,6 +139,7 @@ class Human:
 
 	def eat(self):
 		# Remove food from board
-		if self.world.board['humans'][self.x,self.y] > 0:
+		if self.world.board['food'][self.x,self.y] > 0:
 			self.stats[PV] = (self.stats[PV]+self.stats[PVMAX])/2
+			self.world.board['food'][self.x,self.y] -= 1 
 		
