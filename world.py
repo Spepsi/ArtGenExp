@@ -80,10 +80,36 @@ class World:
 							i2 += delta[0]
 							j2 += delta[1]
 							if i2>=0 and j2>=0 and i2<sizeX and j2<sizeY and self.board["water"][i2,j2]>0:
-								p += proba_water_propagate/2.0
+								p += proba_water_propagate/3.0
 							if np.random.random()<p:
 								self.board["water"][i,j] += 1
-
+		# initialise food
+		for n in range(30):
+			# Create food
+			proba_new_food = 0.5
+			while np.random.random()<proba_new_food:
+				i = np.random.randint(1,sizeX-1)
+				j = np.random.randint(1,sizeY-1)
+				if self.is_food_possible(i,j):
+					self.board["food"][i,j]+=1
+			# Propagate food
+			proba_food_propagate = 0.03
+			proba_food_growth = 0.05
+			for i in range(1,self.sizeX-1):
+				for j in range(1,self.sizeY-1):
+					if self.board["food"][i,j]>0:
+						if np.random.random()<proba_food_growth:
+							self.board["food"][i,j]+=1
+					elif self.is_food_possible(i,j):
+						p = 0
+						for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
+							p += proba_food_propagate*self.board["food"][i2,j2]/2
+						if p>0:
+							for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
+								if self.board["water"][i2,j2]>0:
+									p += proba_food_propagate
+						if np.random.random()<p:
+							self.board["food"][i,j] += 1
 		for i in range(sizeX):
 			self.board['water'][i,0] = 1
 			self.board['water'][i,sizeY-1] = 1
