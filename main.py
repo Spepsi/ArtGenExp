@@ -4,13 +4,13 @@ import pygame as pg
 
 from world import World
 from human import Human
+import interface
 
 
 
 
 nb_cells_visible = 80
 nb_stats = 4
-philippe
 nb_ressources = 6
 proba_mutation = 0.02
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
@@ -40,7 +40,5 @@ world = World(100,100)
 
 if __name__=='__main__':
 	print "hello gilles!"
-
-	while True:
-		world.do()
+	interface.main(world)
 
