@@ -69,6 +69,7 @@ class World:
 			h.stats[PV]-=1
 			if h.stats[PV]<=0:
 				to_remove.append(h)
+				print 'die'
 			else:
 				h.do()
 
