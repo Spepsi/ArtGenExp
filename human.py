@@ -72,16 +72,12 @@ class Human:
 			self.y = parent1.y
 
 		self.stats[PV] = self.stats[PVMAX]
-		
+
 
 	def do(self):
 		# TODO : remove random sensitivy
-
 		self.stats[AGE]+=1
-
-
 		# Choose the action
-
 		output = np.dot(self.dna,np.random.random(self.dna.shape[1]))
 		action = np.argmax(np.abs(output))
 
