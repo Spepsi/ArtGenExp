@@ -21,7 +21,7 @@ PV = 3
 AGE = 4
 
 
-maturity = 20
+maturity = 10
 
 debug = False
 
@@ -62,11 +62,8 @@ class Human:
 		if parent1==None and parent2==None:
 			self.dna = np.random.randn(*shape_dna)
 			self.stats = np.random.randn(nb_stats)
-			
-			self.stats[PVMAX] = int(pv_max*np.random.random())
-			
+			self.stats[PVMAX] = int(pv_max*np.random.random())	
 			self.stats[SIGHT] = int(4*np.random.random())
-
 			self.x = self.world.sizeX/2 + 10*int(np.random.random())
 			self.y = self.world.sizeY/2 + 10*int(np.random.random())
 
