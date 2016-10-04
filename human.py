@@ -18,6 +18,8 @@ STAMINA = 1
 SIGHT = 2
 PV = 3
 AGE = 4
+
+
 maturity = 20
 
 debug = False
@@ -39,7 +41,7 @@ def merge_dna(parent1,parent2):
 			if j==SIGHT:
 				stats[j] = int(4*np.random.random())
 			if j==PVMAX:
-				stats[j] = int(1*np.random.random())
+				stats[j] = int(30*np.random.random())
 
 		else:
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
@@ -86,19 +88,17 @@ class Human:
 		idx = 0
 
 
-		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])
-		print 'Vaneau shape : '+str( vec_sight.shape)
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
-		print vec_sight
+		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])
+		
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		
 		# Calculate stats
 		stats = self.stats
 		inputs = np.concatenate([vec_sight,stats])
-		print vec_sight
 		output = np.dot(self.dna,inputs)
 		action = np.argmax(np.abs(output))
 
@@ -156,6 +156,7 @@ class Human:
 			partner = random.choice(humans)
 			self.world.create_human(Human(self.world,self.world.idx,self,partner))
 			self.world.idx += 1
+			self.stats[AGE] =0
 			
 
 	def eat(self):
