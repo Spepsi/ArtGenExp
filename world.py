@@ -2,8 +2,8 @@ import numpy as np
 from human import Human
 
 
-sizeX = 100
-sizeY = 100
+sizeX = 150
+sizeY = 150
 
 nb_humans_start = 100
 
@@ -84,7 +84,7 @@ class World:
 							if np.random.random()<p:
 								self.board["water"][i,j] += 1
 		# initialise food
-		for n in range(30):
+		for n in range(100):
 			# Create food
 			proba_new_food = 0.5
 			while np.random.random()<proba_new_food:

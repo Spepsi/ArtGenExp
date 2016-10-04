@@ -21,7 +21,7 @@ PV = 3
 AGE = 4
 
 
-maturity = 10
+maturity = 2
 
 debug = False
 
@@ -43,7 +43,6 @@ def merge_dna(parent1,parent2):
 				stats[j] = int(4*np.random.random())
 			if j==PVMAX:
 				stats[j] = int(pv_max*np.random.random())
-
 		else:
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
 
@@ -86,8 +85,7 @@ class Human:
 		idx = 0
 
 
-		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])
-		
+		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])		
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
@@ -97,7 +95,7 @@ class Human:
 		# Calculate stats
 		stats = self.stats
 		inputs = np.concatenate([vec_sight,stats])
-		output = np.dot(self.dna,inputs)
+		output = np.tanh(np.dot(self.dna,inputs))
 		action = np.argmax(np.abs(output))
 
 		if debug:
