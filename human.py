@@ -101,20 +101,25 @@ class Human:
 
 
 	def move(self,output):
-		print 'move'
+
 		somme = np.sum(self.world.board['humans'])
 		x_or = self.x
 		y_or = self.y
 		self.world.board['humans'][self.x,self.y]-=1
-		if np.abs(output[0])>np.abs(output[1]):	
-			self.x = int(self.x + (np.sign(output[0])))
+		newx = self.x
+		newy = self.y
+		if np.abs(output[0])>np.abs(output[1]):
+			newx = int(self.x + (np.sign(output[0])))
 		else:
-			self.y = int( self.y + (np.sign(output[1])))
+			newy = int(self.y + (np.sign(output[1])))
+		if self.world.board['rock'][newx,newy]==0:
+			self.x, self.y = newx, newy
+
 		self.world.board['humans'][self.x,self.y]+=1
 		somme_end = np.sum(self.world.board['humans'])
 		assert somme==somme_end,'error somme : '+str(somme)+' '+str(somme_end)
-		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)==1, "erreur norme"
-		print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
+		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
+		# print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
 
 	def fuck(self):
 		# Get all the humans in the cell
