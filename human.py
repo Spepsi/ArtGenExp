@@ -6,6 +6,7 @@ nb_cells_visible = 81
 nb_sight = 4
 nb_stats = 5
 nb_ressources = 6
+pv_max = 50
 proba_mutation = 0.02
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
 X = 0
@@ -41,7 +42,7 @@ def merge_dna(parent1,parent2):
 			if j==SIGHT:
 				stats[j] = int(4*np.random.random())
 			if j==PVMAX:
-				stats[j] = int(30*np.random.random())
+				stats[j] = int(pv_max*np.random.random())
 
 		else:
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
@@ -62,12 +63,12 @@ class Human:
 			self.dna = np.random.randn(*shape_dna)
 			self.stats = np.random.randn(nb_stats)
 			
-			self.stats[PVMAX] = int(30*np.random.random())
+			self.stats[PVMAX] = int(pv_max*np.random.random())
 			
 			self.stats[SIGHT] = int(4*np.random.random())
 
-			self.x = self.world.sizeX/2
-			self.y = self.world.sizeY/2
+			self.x = self.world.sizeX/2 + 10*int(np.random.random())
+			self.y = self.world.sizeY/2 + 10*int(np.random.random())
 
 		else:
 			self.dna,self.stats = merge_dna(parent1,parent2)
