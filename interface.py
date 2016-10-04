@@ -31,7 +31,7 @@ def main(world):
 	while continuer:
 		draw(fenetre, world)
 		world.do()
-		clock.tick(10)
+		clock.tick(60)
 
 
 def draw(fenetre, world):
@@ -60,7 +60,8 @@ def draw(fenetre, world):
 							print "philippe"
 							xrand = i*sizeCaseX + random.random()*sizeCaseX
 							yrand = j*sizeCaseY + random.random()*sizeCaseY
-							pygame.draw.rect(fenetre,dicColor[key],[xrand,yrand,5,5])
+							print xrand-i*sizeCaseX
+							pygame.draw.rect(fenetre,dicColor[key],[xrand,yrand,2,2])
 	else:
 		nbCaseX = 100
 		nbCaseY = 50
