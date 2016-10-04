@@ -18,7 +18,7 @@ SIGHT = 2
 PV = 3
 
 
-debug = True
+debug = False
 
 
 def merge_dna(parent1,parent2):
@@ -35,9 +35,10 @@ def merge_dna(parent1,parent2):
 	for j,_ in enumerate(parent1.stats):
 		if np.random.random()<proba_mutation:
 			if j==SIGHT:
-				stats[j] = 4*np.random.random()
+				stats[j] = int(4*np.random.random())
 			if j==PVMAX:
-				stats[j] = 100*np.random.random()
+				stats[j] = int(100*np.random.random())
+
 		else:
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
 
@@ -56,6 +57,11 @@ class Human:
 		if parent1==None and parent2==None:
 			self.dna = np.random.randn(*shape_dna)
 			self.stats = np.random.randn(nb_stats)
+			
+			self.stats[PVMAX] = int(100*np.random.random())
+			
+			self.stats[SIGHT] = int(4*np.random.random())
+
 			self.x = self.world.sizeX/2
 			self.y = self.world.sizeY/2
 
@@ -64,11 +70,10 @@ class Human:
 			self.x = parent1.x
 			self.y = parent1.y
 
+		self.stats[PV] = self.stats[PVMAX]
+
 	def do(self):
 		# TODO : remove random sensitivy
-		if debug:
-			'action for : '+str(self.idx)
-			'PV : '+str(self.stats[PV])
 
 
 
@@ -86,6 +91,8 @@ class Human:
 			self.fuck()
 
 		if debug:
+			print 'action for : '+str(self.idx)
+			print 'PV : '+str(self.stats[PV])
 			if action==X:
 				print 'move X'
 			if action == Y:
