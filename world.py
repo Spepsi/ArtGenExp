@@ -5,7 +5,8 @@ from human import Human
 sizeX = 100
 sizeY = 100
 
-nb_humans_start = 100
+nb_foyer_humans = 10
+nb_humans_start = 20
 
 proba_food = 0.05
 proba_water = 0.01
@@ -37,9 +38,12 @@ class World:
 		# Generate random initialization
 		# Humans
 		self.humans = []
-		for i in range(nb_humans_start):
-			self.create_human(Human(self,self.idx))
-			self.idx+=1
+		for _ in range(nb_foyer_humans):
+			x_foyer = (1.0+np.random.randn())*sizeX/2
+			y_foyer = (1.0+np.random.randn())*sizeY/2
+			for _ in range(nb_humans_start):
+				self.create_human(Human(self,self.idx,x=x_foyer,y=y_foyer))
+				self.idx+=1
 
 		# rock et water de base
 		for i in range(1,sizeX-1):
