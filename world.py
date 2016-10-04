@@ -64,7 +64,7 @@ class World:
 
 
 	def do(self):
-		print(np.sum(self.board['humans']))
+		print 'pop' + str(np.sum(self.board['humans']))
 		# Create food
 		proba_new_food = 0.5
 		if np.random.random()<proba_new_food:
@@ -74,7 +74,7 @@ class World:
 				self.board["food"][i,j]+=1
 		# Propagate food
 		proba_food_propagate = 0.2
-		proba_food_growth = 0.2
+		proba_food_growth = 0.0
 		for i in range(1,self.sizeX-1):
 			for j in range(1,self.sizeY-1):
 				if self.board["food"][i,j]>0:

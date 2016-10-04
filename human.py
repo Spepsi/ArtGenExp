@@ -2,7 +2,8 @@ import numpy as np
 import random
 
 
-nb_cells_visible = 80
+nb_cells_visible = 81
+nb_sight = 4
 nb_stats = 5
 nb_ressources = 6
 proba_mutation = 0.02
@@ -78,7 +79,27 @@ class Human:
 		# TODO : remove random sensitivy
 		self.stats[AGE]+=1
 		# Choose the action
-		output = np.dot(self.dna,np.random.random(self.dna.shape[1]))
+		
+
+		# Calculate sightbox
+		
+		idx = 0
+
+
+		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])
+		print 'Vaneau shape : '+str( vec_sight.shape)
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight,self.y-nb_sight:self.y+nb_sight])])
+		print vec_sight
+		# Calculate stats
+		stats = self.stats
+		inputs = np.concatenate([vec_sight,stats])
+		print vec_sight
+		output = np.dot(self.dna,inputs)
 		action = np.argmax(np.abs(output))
 
 		if debug:
