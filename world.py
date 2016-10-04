@@ -17,6 +17,8 @@ PVMAX = 0
 STAMINA = 1
 SIGHT = 2
 PV = 3
+AGE = 4
+
 class World:
 	def __init__(self,sizeX,sizeY):
 		self.idx = 0L
@@ -93,15 +95,12 @@ class World:
 		# rock
 
 	def create_human(self,human):
-		self.humans.append(human)
-			
+		self.humans.append(human)	
 		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
 	def do(self):
-	
-		if debug:
-			print str(len(self.humans))+' '+str(np.sum(self.board['humans']))
+		print 'pop' + str(np.sum(self.board['humans']))
 		# Create food
 		proba_new_food = 0.5
 		if np.random.random()<proba_new_food:
@@ -110,8 +109,8 @@ class World:
 			if self.is_food_possible(i,j):
 				self.board["food"][i,j]+=1
 		# Propagate food
-		proba_food_propagate = 0.05
-		proba_food_growth = 0.2
+		proba_food_propagate = 0.03
+		proba_food_growth = 0.05
 		for i in range(1,self.sizeX-1):
 			for j in range(1,self.sizeY-1):
 				if self.board["food"][i,j]>0:
@@ -120,8 +119,7 @@ class World:
 				elif self.is_food_possible(i,j):
 					p = 0
 					for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-						if self.board["food"][i2,j2]>0:
-							p += proba_food_propagate
+						p += proba_food_propagate*self.board["food"][i2,j2]
 					if p>0:
 						for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
 							if self.board["water"][i2,j2]>0:
@@ -136,7 +134,7 @@ class World:
 
 			else:
 				h.do()
-		print 'dying : '+str(len(to_remove))
+
 		for h in to_remove:
 			self.humans.remove(h)
 			self.board['humans'][h.x,h.y]-=1
