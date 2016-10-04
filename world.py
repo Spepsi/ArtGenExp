@@ -103,7 +103,7 @@ class World:
 		print 'pop' + str(np.sum(self.board['humans']))
 		# Create food
 		proba_new_food = 0.5
-		if np.random.random()<proba_new_food:
+		while np.random.random()<proba_new_food:
 			i = np.random.randint(1,sizeX-1)
 			j = np.random.randint(1,sizeY-1)
 			if self.is_food_possible(i,j):
@@ -119,11 +119,11 @@ class World:
 				elif self.is_food_possible(i,j):
 					p = 0
 					for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-						p += proba_food_propagate*self.board["food"][i2,j2]
+						p += proba_food_propagate*self.board["food"][i2,j2]/2
 					if p>0:
 						for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
 							if self.board["water"][i2,j2]>0:
-								p += proba_food_propagate/2
+								p += proba_food_propagate
 					if np.random.random()<p:
 						self.board["food"][i,j] += 1
 		to_remove = []
