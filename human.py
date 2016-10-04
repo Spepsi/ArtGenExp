@@ -19,7 +19,7 @@ PV = 3
 AGE = 4
 maturity = 20
 
-debug = False
+debug = True
 
 
 def merge_dna(parent1,parent2):
@@ -72,6 +72,7 @@ class Human:
 			self.y = parent1.y
 
 		self.stats[PV] = self.stats[PVMAX]
+		
 
 	def do(self):
 		# TODO : remove random sensitivy
@@ -84,13 +85,6 @@ class Human:
 		output = np.dot(self.dna,np.random.random(self.dna.shape[1]))
 		action = np.argmax(np.abs(output))
 
-		if action==X or action==Y:
-			self.move(output)
-		elif action==EAT:
-			self.eat()
-		elif action==FUCK:
-			self.fuck()
-
 		if debug:
 			print 'action for : '+str(self.idx)
 			print 'PV : '+str(self.stats[PV])
@@ -102,6 +96,13 @@ class Human:
 				print 'eat'
 			if action == FUCK:
 				print 'fuck'
+		if action==X or action==Y:
+			self.move(output)
+		elif action==EAT:
+			self.eat()
+		elif action==FUCK:
+			self.fuck()
+
 
 	def move(self,output):
 		self.world.board['humans'][self.x,self.y]-=1
