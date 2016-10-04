@@ -113,7 +113,7 @@ class Human:
 				print 'eat'
 			if action == FUCK:
 				print 'fuck'
-		if action==X or action==Y:
+		if action==X or action==Y or (action==FUCK and self.stats[AGE]<maturity):
 			self.move(output)
 		elif action==EAT:
 			self.eat()
