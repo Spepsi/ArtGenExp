@@ -4,6 +4,7 @@ import pygame as pg
 
 from world import World
 from human import Human
+import interface
 
 
 
@@ -39,7 +40,5 @@ world = World(100,100)
 
 if __name__=='__main__':
 	print "hello gilles!"
-
-	while True:
-		world.do()
+	interface.main(world)
 
