@@ -5,7 +5,8 @@ from human import Human
 sizeX = 150
 sizeY = 150
 
-nb_humans_start = 100
+nb_foyer_humans = 10
+nb_humans_start = 20
 
 proba_food = 0.05
 proba_water = 0.01
@@ -37,9 +38,12 @@ class World:
 		# Generate random initialization
 		# Humans
 		self.humans = []
-		for i in range(nb_humans_start):
-			self.create_human(Human(self,self.idx))
-			self.idx+=1
+		for _ in range(nb_foyer_humans):
+			x_foyer = max(10,min(sizeX-10,(2.0*np.random.random())*sizeX/2))
+			y_foyer = max(10,min(sizeY-10,(2.0*np.random.random())*sizeY/2))
+			for _ in range(nb_humans_start):
+				self.create_human(Human(self,self.idx,x=x_foyer,y=y_foyer))
+				self.idx+=1
 
 		# rock et water de base
 		for i in range(1,sizeX-1):
@@ -111,11 +115,13 @@ class World:
 						if np.random.random()<p:
 							self.board["food"][i,j] += 1
 		for i in range(sizeX):
-			self.board['water'][i,0] = 1
-			self.board['water'][i,sizeY-1] = 1
-		for j in range(sizeY):
-			self.board['water'][0,j] = 1
-			self.board['water'][sizeX-1,j] = 1
+			for j in range(6):
+				self.board['water'][i,j] = 1
+				self.board['water'][i,sizeY-j] = 1
+		for i in range(6):
+			for j in range(sizeY):
+				self.board['water'][i,j] = 1
+				self.board['water'][sizeX-i,j] = 1
 
 		# food
 		# rock
