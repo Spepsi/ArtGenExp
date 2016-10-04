@@ -39,8 +39,8 @@ class World:
 		# Humans
 		self.humans = []
 		for _ in range(nb_foyer_humans):
-			x_foyer = (1.0+np.random.randn())*sizeX/2
-			y_foyer = (1.0+np.random.randn())*sizeY/2
+			x_foyer = max(1,min(sizeX-1,(1.0+np.random.randn())*sizeX/2))
+			y_foyer = max(1,min(sizeY-1,(1.0+np.random.randn())*sizeY/2))
 			for _ in range(nb_humans_start):
 				self.create_human(Human(self,self.idx,x=x_foyer,y=y_foyer))
 				self.idx+=1

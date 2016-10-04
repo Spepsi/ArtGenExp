@@ -53,7 +53,7 @@ def merge_dna(parent1,parent2):
 	return dna,stats
 
 class Human:
-	def __init__(self,world,idx,parent1=None,parent2=None):
+	def __init__(self,world,idx,parent1=None,parent2=None,x=0,y=0):
 		self.world = world
 		self.dna = np.zeros(shape_dna)
 		self.stats = np.zeros(nb_stats-1)
@@ -67,8 +67,8 @@ class Human:
 			
 			self.stats[SIGHT] = int(4*np.random.random())
 
-			self.x = self.world.sizeX/2 + 10*int(np.random.random())
-			self.y = self.world.sizeY/2 + 10*int(np.random.random())
+			self.x = x
+			self.y = y
 
 		else:
 			self.dna,self.stats = merge_dna(parent1,parent2)
@@ -140,7 +140,7 @@ class Human:
 		self.world.board['humans'][self.x,self.y]+=1
 		somme_end = np.sum(self.world.board['humans'])
 		assert somme==somme_end,'error somme : '+str(somme)+' '+str(somme_end)
-		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
+		# assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
 		# print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
 
 	def fuck(self):
@@ -155,7 +155,7 @@ class Human:
 			
 			# Choose human at random
 			partner = random.choice(humans)
-			self.world.create_human(Human(self.world,self.world.idx,self,partner))
+			self.world.create_human(Human(self.world,self.world.idx,parent1=self,parent2=partner))
 			self.world.idx += 1
 			self.stats[AGE] =0
 			
