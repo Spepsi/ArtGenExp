@@ -16,7 +16,8 @@ PVMAX = 0
 STAMINA = 1
 SIGHT = 2
 PV = 3
-
+AGE = 4
+maturity = 20
 
 debug = False
 
@@ -43,6 +44,7 @@ def merge_dna(parent1,parent2):
 			stats[j] =  (parent1.stats[j]  if np.random.random()>0.5 else parent2.stats[j])
 
 	stats[PV] = stats[PVMAX]
+	stats[AGE] =0
 	# Mutation !!!!
 	return dna,stats
 
@@ -53,7 +55,6 @@ class Human:
 		self.stats = np.zeros(nb_stats-1)
 		self.idx = idx
 		
-
 		if parent1==None and parent2==None:
 			self.dna = np.random.randn(*shape_dna)
 			self.stats = np.random.randn(nb_stats)
@@ -75,7 +76,7 @@ class Human:
 	def do(self):
 		# TODO : remove random sensitivy
 
-
+		self.stats[AGE]+=1
 
 
 		# Choose the action
@@ -113,7 +114,7 @@ class Human:
 
 	def fuck(self):
 		# Get all the humans in the cell
-		if self.world.board['humans'][self.x,self.y] > 1:
+		if self.world.board['humans'][self.x,self.y] > 1 and self.stats[AGE]>maturity:
 			# Find another human being
 			humans = []
 			for h in self.world.humans:
