@@ -18,8 +18,7 @@ SIGHT = 2
 PV = 3
 
 
-
-debug = False
+debug = True
 
 
 def merge_dna(parent1,parent2):
@@ -69,6 +68,7 @@ class Human:
 		# TODO : remove random sensitivy
 		if debug:
 			'action for : '+str(self.idx)
+			'PV : '+str(self.stats[PV])
 
 
 
