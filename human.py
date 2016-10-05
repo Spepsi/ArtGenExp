@@ -134,8 +134,9 @@ class Human:
 		self.world.board['humans'][self.x,self.y]+=1
 		somme_end = np.sum(self.world.board['humans'])
 		assert somme==somme_end,'error somme : '+str(somme)+' '+str(somme_end)
-		# assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
-		# print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
+		print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
+		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
+		
 
 	def fuck(self):
 		# Get all the humans in the cell
