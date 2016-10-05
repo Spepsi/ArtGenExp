@@ -8,7 +8,7 @@ nb_stats = 5
 nb_ressources = 5
 pv_max = 200
 proba_mutation = 0.05
-shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
+shape_dna = (4,5*nb_ressources+nb_stats)
 shape_dna2 = (4,4)
 X = 0
 Y = 1
@@ -96,7 +96,7 @@ class Human:
 		stats[AGE] = stats[AGE]/maturity
 
 		inputs = np.concatenate([vec_sight,stats])
-		output = np.tanh(np.dot(self.dna,inputs))
+		output = np.dot(self.dna,inputs)
 		action = np.argmax(np.abs(output))
 
 		if debug:
@@ -127,10 +127,10 @@ class Human:
 		self.world.cases[self.x][self.y].remove(self.idx)
 		newx = self.x
 		newy = self.y
-		if np.abs(output[0])>np.abs(output[1]):
-			newx = int(self.x + (np.sign(output[0])))
+		if abs(output[X])>abs(output[Y]):
+			newx = int(self.x + (np.sign(output[X])))
 		else:
-			newy = int(self.y + (np.sign(output[1])))
+			newy = int(self.y + (np.sign(output[Y])))
 		if self.world.board['rock'][newx,newy]==0:
 			self.x, self.y = newx, newy
 
