@@ -2,8 +2,6 @@ import numpy as np
 from human import Human
 import random
 
-sizeX = 100
-sizeY = 100
 
 nb_foyer_humans = 10
 nb_humans_start = 20
@@ -90,40 +88,25 @@ class World:
 							if np.random.random()<p:
 								self.board["water"][i,j] += 1
 		# initialise food
-		for n in range(100):
-			# Create food
-			proba_new_food = 0.5
-			while np.random.random()<proba_new_food:
-				i = np.random.randint(1,sizeX-1)
-				j = np.random.randint(1,sizeY-1)
-				if self.is_food_possible(i,j):
-					self.board["food"][i,j]+=1
-			# Propagate food
-			proba_food_propagate = 0.03
-			proba_food_growth = 0.05
-			for i in range(1,self.sizeX-1):
-				for j in range(1,self.sizeY-1):
-					if self.board["food"][i,j]>0:
-						if np.random.random()<proba_food_growth:
-							self.board["food"][i,j]+=1
-					elif self.is_food_possible(i,j):
-						p = 0
-						for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-							p += proba_food_propagate*self.board["food"][i2,j2]/2
-						if p>0:
-							for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-								if self.board["water"][i2,j2]>0:
-									p += proba_food_propagate
-						if np.random.random()<p:
-							self.board["food"][i,j] += 1
+		for n in range(30):
+			self.do_food()
+		# draw map borders
 		for i in range(sizeX):
 			for j in range(6):
 				self.board['water'][i,j] = 1
 				self.board['water'][i,sizeY-j-1] = 1
+				self.board['food'][i,j] = 0
+				self.board['food'][i,sizeY-j-1] = 0
+				self.board['rock'][i,j] = 0
+				self.board['rock'][i,sizeY-j-1] = 0
 		for i in range(6):
 			for j in range(sizeY):
 				self.board['water'][i,j] = 1
 				self.board['water'][sizeX-i-1,j] = 1
+				self.board['food'][i,j] = 0
+				self.board['food'][sizeX-i-1,j] = 0
+				self.board['rock'][i,j] = 0
+				self.board['rock'][sizeX-i-1,j] = 0
 
 		# food
 		# rock
@@ -141,7 +124,8 @@ class World:
 		return tab
 
 	def do(self):
-		
+		print 'pop' + str(np.sum(self.board['humans']))
+		self.do_food()
 		to_remove = []
 		if np.max(self.board['humans'])>max_pop:
 			print 'maladie'
@@ -155,40 +139,6 @@ class World:
 						humans = humans[0:kill]
 						
 						to_remove = humans
-
-		# Create food
-		pop = np.sum(self.board['humans'])
-		if pop>max_total_pop:
-			# Remove random humans
-			n_removed = pop-max_total_pop
-			humans = list(self.humans)
-			random.shuffle(humans)
-			[to_remove.append(h) for h in humans[0:n_removed]]
-		proba_new_food = 0.5
-		while np.random.random()<proba_new_food:
-			i = np.random.randint(1,sizeX-1)
-			j = np.random.randint(1,sizeY-1)
-			if self.is_food_possible(i,j):
-				self.board["food"][i,j]+=1
-		# Propagate food
-		proba_food_propagate = 0.03
-		proba_food_growth = 0.05
-		for i in range(1,self.sizeX-1):
-			for j in range(1,self.sizeY-1):
-				if self.board["food"][i,j]>0:
-					if np.random.random()<proba_food_growth:
-						self.board["food"][i,j]+=1
-				elif self.is_food_possible(i,j):
-					p = 0
-					for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-						p += proba_food_propagate*self.board["food"][i2,j2]/2
-					if p>0:
-						for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
-							if self.board["water"][i2,j2]>0:
-								p += proba_food_propagate
-					if np.random.random()<p:
-						self.board["food"][i,j] += 1
-		
 		for idx,h in enumerate(self.humans):
 			h.stats[PV]-=1
 			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
@@ -211,6 +161,33 @@ class World:
 		return self.board["rock"][i,j]==0 and self.board["water"][i,j]==0
 	def is_water_possible(self,i,j):
 		return self.board["rock"][i,j]==0
+	def do_food(self):
+		# Create food
+		proba_new_food = 0.5
+		while np.random.random()<proba_new_food:
+			i = np.random.randint(1,self.sizeX-1)
+			j = np.random.randint(1,self.sizeY-1)
+			if self.is_food_possible(i,j):
+				self.board["food"][i,j]+=1
+		# Propagate food
+		proba_food_propagate = 0.05
+		proba_food_growth = 0.05
+		for i in range(1,self.sizeX-1):
+			for j in range(1,self.sizeY-1):
+				if self.board["food"][i,j]>0:
+					p = proba_food_growth/4
+					for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
+						if self.board["water"][i2,j2]>0:
+							p += proba_food_growth
+						p+= proba_food_growth * (self.board["food"][i2,j2]-1) / 4
+					if np.random.random()<p:
+						self.board["food"][i,j]+=1
+				elif self.is_food_possible(i,j):
+					p = 0
+					for i2,j2 in [[i-1,j],[i+1,j],[i,j-1],[i,j+1]]:
+						p += proba_food_propagate*self.board["food"][i2,j2]
+					if np.random.random()<p:
+						self.board["food"][i,j] += 1
 
 
 

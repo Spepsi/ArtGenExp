@@ -43,14 +43,21 @@ def draw(fenetre, world):
 		nbCaseY = len(board["water"])
 		sizeCaseX = 1.0 * resX / nbCaseX
 		sizeCaseY = 1.0 * resY / nbCaseY
-		# draw water, rock, food
-		for key in ["water","food","rock"]:
+		# draw water, rock
+		for key in ["water","rock"]:
 			for i in range(len(board[key])):
 				for j in range(len(board[key][0])):
 					if board[key][i,j]>0:
 						pygame.draw.rect(fenetre, 
 										dicColor[key], 
 										[i*sizeCaseX,j*sizeCaseY,sizeCaseX,sizeCaseY])
+		# draw food
+		for i in range(len(board["food"])):
+			for j in range(len(board["food"][0])):
+				if board["food"][i,j]>0:
+					pygame.draw.rect(fenetre, 
+									[0,255-min(200,board["food"][i,j]*4),0], 
+									[i*sizeCaseX,j*sizeCaseY,sizeCaseX,sizeCaseY])
 		# draw humans and pheromones
 		for key in ["pheromones","humans"]:
 			for i in range(len(board[key])):
