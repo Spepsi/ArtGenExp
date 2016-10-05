@@ -1,6 +1,6 @@
 import numpy as np
 from human import Human
-
+import random
 
 sizeX = 100
 sizeY = 100
@@ -11,7 +11,8 @@ nb_humans_start = 20
 proba_food = 0.05
 proba_water = 0.01
 proba_rock = 0.2
-
+max_pop = 100
+kill = 2*max_pop/3
 debug = True
 
 PVMAX = 0
@@ -131,9 +132,26 @@ class World:
 		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
+	def get_humans_in_case(x,y):
+		tab= []
+		for h in self.board['humans']:
+			if h.x==x and h.y==y:
+				tab.append(h)
+		return h
+
 	def do(self):
-		print 'new round'
-		print 'pop' + str(np.sum(self.board['humans']))
+		
+		to_remove = []
+		if np.max(self.board['humans'])>max_pop:
+			print 'maladie '
+			# Look for cells in max pop ...
+			for i in range(sizeX):
+				for j in range(sizeY):
+					if self.board['humans']>max_pop:
+						humans = random.shuffle(self.get_humans_in_case(i,j))
+						humans = humans[0:kill]
+						to_remove = humans
+
 		# Create food
 		proba_new_food = 0.5
 		while np.random.random()<proba_new_food:
@@ -159,7 +177,7 @@ class World:
 								p += proba_food_propagate
 					if np.random.random()<p:
 						self.board["food"][i,j] += 1
-		to_remove = []
+		
 		for idx,h in enumerate(self.humans):
 			h.stats[PV]-=1
 			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
