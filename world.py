@@ -3,8 +3,8 @@ from human import Human
 import random
 
 
-nb_foyer_humans = 10
-nb_humans_start = 20
+nb_foyer_humans = 15
+nb_humans_start = 100
 
 
 nb_sight = 2
@@ -12,8 +12,8 @@ nb_sight = 2
 proba_food = 0.05
 proba_water = 0.01
 proba_rock = 0.2
-max_pop = 10
-max_total_pop = 1000
+max_pop = 20
+max_total_pop = 500
 kill = 2*max_pop/3
 debug = True
 
@@ -25,6 +25,7 @@ AGE = 4
 
 class World:
 	def __init__(self,sizeX,sizeY):
+		self.to_be_born = []
 		self.idx = 0L
 		self.sizeX = sizeX
 		self.sizeY = sizeY
@@ -131,8 +132,7 @@ class World:
 		# rock
 
 	def create_human(self,human):
-		self.humans[human.idx] = human
-		self.board['humans'][int(human.x),int(human.y)]+=1
+		self.to_be_born.append(human)
 		self.cases[int(human.x)][int(human.y)].append(human.idx)
 
 
@@ -145,6 +145,13 @@ class World:
 	def do(self):
 		print 'pop' + str(np.sum(self.board['humans']))
 		self.do_food()
+
+		# Handle born
+		for h in self.to_be_born:
+			self.humans[h.idx] = h
+			self.board['humans'][h.x,h.y]+=1
+		self.to_be_born = []
+
 		to_remove = []
 		if np.max(self.board['humans'])>max_pop:
 			print 'maladie'
@@ -158,12 +165,27 @@ class World:
 						humans = humans[0:kill]
 						
 						to_remove = humans
+
+
+		pop = np.sum(self.board['humans'])
+
+		if pop>max_total_pop:
+			print 'trop de pop'
+			nb_to_kill = int(pop - max_total_pop)
+			humans = list(self.humans.values())
+			
+			random.shuffle(humans)
+			humans = humans[0:nb_to_kill]
+			
+			[to_remove.append(h) for h in humans]
+
 		# handling death
 		for idx,i in enumerate(self.humans):
 			h = self.humans[i]
 			h.stats[PV]-=1
 			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0 or self.board['rock'][h.x,h.y]>0:
 				to_remove.append(h)
+
 		for h in to_remove:
 			if h.idx in self.humans:
 				del self.humans[h.idx]
