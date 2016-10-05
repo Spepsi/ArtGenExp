@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 
-
+nb_sight = 2
 nb_cells_visible = (1+nb_sight*2)**2
 nb_stats = 5
 nb_ressources = 5
