@@ -2,14 +2,13 @@ import numpy as np
 import random
 
 
-
 nb_sight = 2
 nb_cells_visible = (1+nb_sight*2)**2
 nb_stats = 5
 nb_ressources = 5
 pv_max = 200
 proba_mutation = 0.05
-shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
+shape_dna = (4,5*nb_ressources+nb_stats)
 shape_dna2 = (4,4)
 X = 0
 Y = 1
@@ -57,6 +56,7 @@ def merge_dna(parent1,parent2):
 class Human:
 	def __init__(self,world,idx,parent1=None,parent2=None,x=0,y=0):
 		self.world = world
+		self.has_eaten = False
 		self.dna = np.zeros(shape_dna)
 		self.stats = np.zeros(nb_stats-1)
 		self.idx = idx
@@ -97,7 +97,7 @@ class Human:
 		stats[AGE] = stats[AGE]/maturity
 
 		inputs = np.concatenate([vec_sight,stats])
-		output = np.tanh(np.dot(self.dna,inputs))
+		output = np.dot(self.dna,inputs)
 		action = np.argmax(np.abs(output))
 
 		if debug:
@@ -128,10 +128,10 @@ class Human:
 		self.world.cases[self.x][self.y].remove(self.idx)
 		newx = self.x
 		newy = self.y
-		if np.abs(output[0])>np.abs(output[1]):
-			newx = int(self.x + (np.sign(output[0])))
+		if abs(output[X])>abs(output[Y]):
+			newx = int(self.x + (np.sign(output[X])))
 		else:
-			newy = int(self.y + (np.sign(output[1])))
+			newy = int(self.y + (np.sign(output[Y])))
 		if self.world.board['rock'][newx,newy]==0:
 			self.x, self.y = newx, newy
 
@@ -148,7 +148,7 @@ class Human:
 
 	def fuck(self):
 		# Get all the humans in the cell
-		if self.world.board['humans'][self.x,self.y] > 1 and self.stats[AGE]>maturity:
+		if self.world.board['humans'][self.x,self.y] > 1 and self.stats[AGE]>maturity and self.has_eaten:
 			# Find another human being
 			# humans = []
 			# for h in self.world.humans:
@@ -169,5 +169,6 @@ class Human:
 		# Remove food from board
 		if self.world.board['food'][self.x,self.y] > 0:
 			self.stats[PV] = (self.stats[PV]+self.stats[PVMAX])/2
-			self.world.board['food'][self.x,self.y] -= 1 
+			self.world.board['food'][self.x,self.y] -= 1
+			self.has_eaten = True 
 		

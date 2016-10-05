@@ -154,7 +154,7 @@ class World:
 
 		to_remove = []
 		if np.max(self.board['humans'])>max_pop:
-			print 'maladie'
+			
 			# Look for cells in max pop ...
 			for i in range(self.sizeX):
 				for j in range(self.sizeY):
@@ -170,7 +170,7 @@ class World:
 		pop = np.sum(self.board['humans'])
 
 		if pop>max_total_pop:
-			print 'trop de pop'
+			
 			nb_to_kill = int(pop - max_total_pop)
 			humans = list(self.humans.values())
 			
@@ -195,17 +195,29 @@ class World:
 		# preprocessing human actions
 		self.preprocessSight = [[None for j in range(self.sizeY)] for i in range(self.sizeX)]
 
-
-
 		for i in range(self.sizeX):
-			for j in range(self.sizeY):
-				if len(self.cases[i][j])>0:
-					vec_sight = np.ravel(self.board['water'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])		
-					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['humans'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
-					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['rock'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
-					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['food'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
-					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['pheromones'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
-					self.preprocessSight[i][j] = vec_sight
+		 	for j in range(self.sizeY):
+		 		if len(self.cases[i][j])>0:
+		 			vec_sight = []
+		 			for key in ["food","humans","rock","water","pheromones"]:
+		 				l = np.sum(self.board[key][i-nb_sight:i+1,j-nb_sight:j+nb_sight+1])
+		 				r = np.sum(self.board[key][i:i+nb_sight+1,j-nb_sight:j+nb_sight+1])
+		 				u = np.sum(self.board[key][i-nb_sight:i+nb_sight+1,j-nb_sight:j+1])
+		 				d = np.sum(self.board[key][i-nb_sight:i+nb_sight+1,j:j+nb_sight+1])
+		 				c = self.board[key][i,j]
+		 				vec_sight+=[l,r,d,u,c]
+		 			self.preprocessSight[i][j] = vec_sight
+
+
+		# for i in range(self.sizeX):
+		# 	for j in range(self.sizeY):
+		# 		if len(self.cases[i][j])>0:
+		# 			vec_sight = np.ravel(self.board['water'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])		
+		# 			vec_sight = np.concatenate([vec_sight,np.ravel(self.board['humans'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
+		# 			vec_sight = np.concatenate([vec_sight,np.ravel(self.board['rock'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
+		# 			vec_sight = np.concatenate([vec_sight,np.ravel(self.board['food'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
+		# 			vec_sight = np.concatenate([vec_sight,np.ravel(self.board['pheromones'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
+		# 			self.preprocessSight[i][j] = vec_sight
 
 		# handling human actions
 		for h in self.humans.values():
