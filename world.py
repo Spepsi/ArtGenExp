@@ -9,7 +9,8 @@ nb_humans_start = 20
 proba_food = 0.05
 proba_water = 0.01
 proba_rock = 0.2
-max_pop = 100
+max_pop = 10
+max_total_pop = 1000
 kill = 2*max_pop/3
 debug = True
 
@@ -115,25 +116,28 @@ class World:
 		self.board['humans'][int(human.x),int(human.y)]+=1
 
 
-	def get_humans_in_case(x,y):
+	def get_humans_in_case(self,x,y):
 		tab= []
-		for h in self.board['humans']:
+		for h in self.humans:
 			if h.x==x and h.y==y:
 				tab.append(h)
-		return h
+		return tab
 
 	def do(self):
 		print 'pop' + str(np.sum(self.board['humans']))
 		self.do_food()
 		to_remove = []
 		if np.max(self.board['humans'])>max_pop:
-			print 'maladie '
+			print 'maladie'
 			# Look for cells in max pop ...
 			for i in range(sizeX):
 				for j in range(sizeY):
-					if self.board['humans']>max_pop:
-						humans = random.shuffle(self.get_humans_in_case(i,j))
+					if self.board['humans'][i,j]>max_pop:
+						humans = self.get_humans_in_case(i,j)
+						
+						random.shuffle(humans)
 						humans = humans[0:kill]
+						
 						to_remove = humans
 		for idx,h in enumerate(self.humans):
 			h.stats[PV]-=1
@@ -144,8 +148,9 @@ class World:
 				h.do()
 
 		for h in to_remove:
-			self.humans.remove(h)
-			self.board['humans'][h.x,h.y]-=1
+			if h in self.humans:
+				self.humans.remove(h)
+				self.board['humans'][h.x,h.y]-=1
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
