@@ -2,10 +2,11 @@ import numpy as np
 import random
 
 
-nb_cells_visible = 81
-nb_sight = 4
+
+nb_sight = 2
+nb_cells_visible = (1+nb_sight*2)**2
 nb_stats = 5
-nb_ressources = 6
+nb_ressources = 5
 pv_max = 50
 proba_mutation = 0.02
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
@@ -90,7 +91,7 @@ class Human:
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		# vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		
 		# Calculate stats
 		stats = self.stats
