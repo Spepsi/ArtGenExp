@@ -2,8 +2,6 @@ import numpy as np
 from human import Human
 
 
-sizeX = 150
-sizeY = 150
 
 nb_foyer_humans = 10
 nb_humans_start = 20
@@ -117,11 +115,11 @@ class World:
 		for i in range(sizeX):
 			for j in range(6):
 				self.board['water'][i,j] = 1
-				self.board['water'][i,sizeY-j] = 1
+				self.board['water'][i,sizeY-j-1] = 1
 		for i in range(6):
 			for j in range(sizeY):
 				self.board['water'][i,j] = 1
-				self.board['water'][sizeX-i,j] = 1
+				self.board['water'][sizeX-i-1,j] = 1
 
 		# food
 		# rock
@@ -136,8 +134,8 @@ class World:
 		# Create food
 		proba_new_food = 0.5
 		while np.random.random()<proba_new_food:
-			i = np.random.randint(1,sizeX-1)
-			j = np.random.randint(1,sizeY-1)
+			i = np.random.randint(1,self.sizeX-1)
+			j = np.random.randint(1,self.sizeY-1)
 			if self.is_food_possible(i,j):
 				self.board["food"][i,j]+=1
 		# Propagate food
