@@ -9,6 +9,7 @@ nb_ressources = 6
 pv_max = 50
 proba_mutation = 0.02
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
+shape_dna2 = (4,4)
 X = 0
 Y = 1
 EAT = 2
@@ -108,7 +109,7 @@ class Human:
 				print 'eat'
 			if action == FUCK:
 				print 'fuck'
-		if action==X or action==Y or (action==FUCK and self.stats[AGE]<maturity):
+		if action==X or action==Y or (action==FUCK and self.stats[AGE]<maturity) or (action==EAT and self.world.board['food'][self.x,self.y] < 1) :
 			self.move(output)
 		elif action==EAT:
 			self.eat()
