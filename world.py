@@ -204,8 +204,8 @@ class World:
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
-				print self.board['pheromones'][i,j]-1
-				self.board['pheromones'][i,j] = np.max(0,self.board['pheromones'][i,j]-1)
+				
+				self.board['pheromones'][i,j] = max(0,self.board['pheromones'][i,j]-1)
 
 	def is_food_possible(self,i,j):
 		return self.board["rock"][i,j]==0 and self.board["water"][i,j]==0
