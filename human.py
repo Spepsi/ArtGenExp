@@ -140,7 +140,7 @@ class Human:
 		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
 
 		# Put pheromones
-		self.world['pheromones'][x_or,y_or]+= nb_pheromones
+		self.world.board['pheromones'][x_or,y_or]+= nb_pheromones
 		
 
 	def fuck(self):
