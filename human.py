@@ -7,7 +7,7 @@ nb_sight = 2
 nb_cells_visible = (1+nb_sight*2)**2
 nb_stats = 5
 nb_ressources = 5
-pv_max = 50
+pv_max = 200
 proba_mutation = 0.05
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
 shape_dna2 = (4,4)
@@ -157,7 +157,9 @@ class Human:
 			# assert len(humans)==self.world.board['humans'][int(self.x),int(self.y)] -1 , 'Bad update ...'+str(len(humans))+' '+str(self.world.board['humans'][self.x,self.y] -1)
 			
 			# Choose human at random
-			partner = self.world.humans[random.choice(self.world.cases[self.x][self.y])]
+			id_partner = random.choice(self.world.cases[self.x][self.y])
+			# print self.world.humans.keys(), id_partner
+			partner = self.world.humans[id_partner]
 			self.world.create_human(Human(self.world,self.world.idx,parent1=self,parent2=partner))
 			self.world.idx += 1
 			self.stats[AGE] =0

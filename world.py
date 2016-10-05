@@ -3,17 +3,17 @@ from human import Human
 import random
 
 
-nb_foyer_humans = 15
-nb_humans_start = 100
+nb_foyer_humans = 4
+nb_humans_start = 500
 
 
 nb_sight = 2
 
 proba_food = 0.05
-proba_water = 0.01
+proba_water = 0.005
 proba_rock = 0.2
 max_pop = 20
-max_total_pop = 500
+max_total_pop = 1500
 kill = 2*max_pop/3
 debug = True
 
@@ -133,7 +133,6 @@ class World:
 
 	def create_human(self,human):
 		self.to_be_born.append(human)
-		self.cases[int(human.x)][int(human.y)].append(human.idx)
 
 
 	def get_humans_in_case(self,x,y):
@@ -150,6 +149,7 @@ class World:
 		for h in self.to_be_born:
 			self.humans[h.idx] = h
 			self.board['humans'][h.x,h.y]+=1
+			self.cases[int(h.x)][int(h.y)].append(h.idx)
 		self.to_be_born = []
 
 		to_remove = []
@@ -190,11 +190,13 @@ class World:
 			if h.idx in self.humans:
 				del self.humans[h.idx]
 				self.board['humans'][h.x,h.y]-=1
-				print h.idx, self.cases[h.x][h.y]
 				self.cases[h.x][h.y].remove(h.idx)
 
 		# preprocessing human actions
 		self.preprocessSight = [[None for j in range(self.sizeY)] for i in range(self.sizeX)]
+
+
+
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
 				if len(self.cases[i][j])>0:
@@ -204,6 +206,7 @@ class World:
 					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['food'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
 					vec_sight = np.concatenate([vec_sight,np.ravel(self.board['pheromones'][i-nb_sight:i+nb_sight+1,j-nb_sight:j+nb_sight+1])])
 					self.preprocessSight[i][j] = vec_sight
+
 		# handling human actions
 		for h in self.humans.values():
 			h.do()
