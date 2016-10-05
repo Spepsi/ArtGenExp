@@ -8,7 +8,7 @@ nb_cells_visible = (1+nb_sight*2)**2
 nb_stats = 5
 nb_ressources = 5
 pv_max = 50
-proba_mutation = 0.02
+proba_mutation = 0.05
 shape_dna = (4,nb_cells_visible*nb_ressources+nb_stats)
 shape_dna2 = (4,4)
 X = 0
@@ -22,7 +22,8 @@ SIGHT = 2
 PV = 3
 AGE = 4
 
-nb_pheromones = 20
+nb_pheromones = 5
+max_pheromones =20
 maturity = 2
 
 debug = False
@@ -77,7 +78,7 @@ class Human:
 
 	def do(self):
 		# TODO : remove random sensitivy
-		self.stats[AGE]+=1
+		self.stats[AGE] = min(maturity+1,self.stats[AGE]+1)
 		# Choose the action
 		
 
@@ -87,14 +88,19 @@ class Human:
 
 
 		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])		
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])/10.0
 		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])/100.0
+		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])/max_pheromones
 		# vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		
 		# Calculate stats
-		stats = self.stats
+		stats = list(self.stats)
+		stats[PVMAX] = stats[PVMAX]/float(pv_max)
+		stats[PV] = stats[PV]/pv_max
+		stats[SIGHT] = stats[SIGHT]/nb_sight
+		stats[AGE] = stats[AGE]/maturity
+
 		inputs = np.concatenate([vec_sight,stats])
 		output = np.tanh(np.dot(self.dna,inputs))
 		action = np.argmax(np.abs(output))
@@ -140,7 +146,7 @@ class Human:
 		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
 
 		# Put pheromones
-		self.world.board['pheromones'][x_or,y_or]+= nb_pheromones
+		self.world.board['pheromones'][x_or,y_or]= min(max_pheromones,self.world.board['pheromones'][x_or,y_or]+nb_pheromones) 
 		
 
 	def fuck(self):

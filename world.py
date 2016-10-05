@@ -3,14 +3,14 @@ from human import Human
 import random
 
 
-nb_foyer_humans = 10
-nb_humans_start = 20
+nb_foyer_humans = 15
+nb_humans_start = 100
 
 proba_food = 0.05
 proba_water = 0.01
 proba_rock = 0.2
-max_pop = 10
-max_total_pop = 1000
+max_pop = 20
+max_total_pop = 500
 kill = 2*max_pop/3
 debug = True
 
@@ -130,8 +130,8 @@ class World:
 		if np.max(self.board['humans'])>max_pop:
 			print 'maladie'
 			# Look for cells in max pop ...
-			for i in range(sizeX):
-				for j in range(sizeY):
+			for i in range(self.sizeX):
+				for j in range(self.sizeY):
 					if self.board['humans'][i,j]>max_pop:
 						humans = self.get_humans_in_case(i,j)
 						
@@ -139,6 +139,18 @@ class World:
 						humans = humans[0:kill]
 						
 						to_remove = humans
+
+		pop = np.sum(self.board['humans'])
+
+		if pop>max_total_pop:
+			print 'trop de pop'
+			nb_to_kill = int(pop - max_total_pop)
+			humans = list(self.humans)
+			
+			random.shuffle(humans)
+			humans = humans[0:nb_to_kill]
+			
+			[to_remove.append(h) for h in humans]
 		for idx,h in enumerate(self.humans):
 			h.stats[PV]-=1
 			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
