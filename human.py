@@ -86,11 +86,7 @@ class Human:
 		idx = 0
 
 
-		vec_sight = np.ravel(self.world.board['water'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])		
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['humans'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['rock'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
-		vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['pheromones'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
+		vec_sight = self.world.preprocessSight[self.x][self.y]
 		# vec_sight = np.concatenate([vec_sight,np.ravel(self.world.board['food'][self.x-nb_sight:self.x+nb_sight+1,self.y-nb_sight:self.y+nb_sight+1])])
 		
 		# Calculate stats
