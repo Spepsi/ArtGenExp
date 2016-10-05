@@ -31,7 +31,6 @@ class World:
 						'pheromones' : np.zeros((sizeX,sizeY)),
 						'rock': np.zeros((sizeX,sizeY)),
 						'water': np.zeros((sizeX,sizeY))
-
 					}
 		self.cases = [[[] for j in range(self.sizeY)] for i in range(self.sizeX)]
 
@@ -53,6 +52,23 @@ class World:
 					self.board['rock'][i,j] = 1
 				if np.random.random()<(1.0-d)*proba_water:
 					self.board['water'][i,j] = 1
+		# propagate rock into mountains
+		proba_rock_propagate = 0.13
+		to_add_rock = []
+		for i in range(1,sizeX-1):
+			for j in range(1,sizeY-1):
+				if self.is_food_possible(i,j):
+					p = 0
+					for delta in [[1,0],[-1,0],[0,1],[0,-1]]:
+						i2,j2 = i,j
+						i2 += delta[0]
+						j2 += delta[1]
+						if i2>=0 and j2>=0 and i2<sizeX and j2<sizeY and self.board["rock"][i2,j2]>0:
+							p += proba_rock_propagate
+						if np.random.random()<p:
+							to_add_rock.append([i,j])
+		for a in to_add_rock:
+			self.board["rock"][a[0],a[1]] = 1
 		# propagate water into river
 		proba_water_propagate = 0.13
 		for n in range(20):
@@ -119,7 +135,6 @@ class World:
 
 	def get_humans_in_case(self,x,y):
 		tab= []
-		print self.humans
 		for i in self.cases[x][y]:
 			tab.append(self.humans[i])
 		return tab
@@ -143,7 +158,7 @@ class World:
 		for idx,i in enumerate(self.humans):
 			h = self.humans[i]
 			h.stats[PV]-=1
-			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
+			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0 or self.board['rock'][h.x,h.y]>0:
 				to_remove.append(h)
 
 			else:
@@ -153,6 +168,8 @@ class World:
 			if h.idx in self.humans:
 				del self.humans[h.idx]
 				self.board['humans'][h.x,h.y]-=1
+				print h.idx, self.cases[h.x][h.y]
+				self.cases[h.x][h.y].remove(h.idx)
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):

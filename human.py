@@ -124,6 +124,7 @@ class Human:
 		x_or = self.x
 		y_or = self.y
 		self.world.board['humans'][self.x,self.y]-=1
+		self.world.cases[self.x][self.y].remove(self.idx)
 		newx = self.x
 		newy = self.y
 		if np.abs(output[0])>np.abs(output[1]):
@@ -134,6 +135,7 @@ class Human:
 			self.x, self.y = newx, newy
 
 		self.world.board['humans'][self.x,self.y]+=1
+		self.world.cases[self.x][self.y].append(self.idx)
 		somme_end = np.sum(self.world.board['humans'])
 		assert somme==somme_end,'error somme : '+str(somme)+' '+str(somme_end)
 		# print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
