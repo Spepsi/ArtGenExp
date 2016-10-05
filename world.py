@@ -33,11 +33,11 @@ class World:
 						'water': np.zeros((sizeX,sizeY))
 
 					}
-		
+		self.cases = [[[] for j in range(self.sizeY)] for i in range(self.sizeX)]
 
 		# Generate random initialization
 		# Humans
-		self.humans = []
+		self.humans = {}
 		for _ in range(nb_foyer_humans):
 			x_foyer = int(max(10,min(sizeX-10,(2.0*np.random.random())*sizeX/2)))
 			y_foyer = int(max(10,min(sizeY-10,(2.0*np.random.random())*sizeY/2)))
@@ -112,15 +112,16 @@ class World:
 		# rock
 
 	def create_human(self,human):
-		self.humans.append(human)	
+		self.humans[human.idx] = human
 		self.board['humans'][int(human.x),int(human.y)]+=1
+		self.cases[int(human.x)][int(human.y)].append(human.idx)
 
 
 	def get_humans_in_case(self,x,y):
 		tab= []
-		for h in self.humans:
-			if h.x==x and h.y==y:
-				tab.append(h)
+		print self.humans
+		for i in self.cases[x][y]:
+			tab.append(self.humans[i])
 		return tab
 
 	def do(self):
@@ -130,8 +131,8 @@ class World:
 		if np.max(self.board['humans'])>max_pop:
 			print 'maladie'
 			# Look for cells in max pop ...
-			for i in range(sizeX):
-				for j in range(sizeY):
+			for i in range(self.sizeX):
+				for j in range(self.sizeY):
 					if self.board['humans'][i,j]>max_pop:
 						humans = self.get_humans_in_case(i,j)
 						
@@ -139,7 +140,8 @@ class World:
 						humans = humans[0:kill]
 						
 						to_remove = humans
-		for idx,h in enumerate(self.humans):
+		for idx,i in enumerate(self.humans):
+			h = self.humans[i]
 			h.stats[PV]-=1
 			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
 				to_remove.append(h)
@@ -148,13 +150,13 @@ class World:
 				h.do()
 
 		for h in to_remove:
-			if h in self.humans:
-				self.humans.remove(h)
+			if h.idx in self.humans:
+				del self.humans[h.idx]
 				self.board['humans'][h.x,h.y]-=1
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
-				self.board['pheromones'][i,j] = np.max(0,self.board['pheromones'][i,j]-1)
+				self.board['pheromones'][i,j] = max(0,self.board['pheromones'][i,j]-1)
 
 	def is_food_possible(self,i,j):
 		return self.board["rock"][i,j]==0 and self.board["water"][i,j]==0
