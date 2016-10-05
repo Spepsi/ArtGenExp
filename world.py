@@ -22,6 +22,7 @@ AGE = 4
 
 class World:
 	def __init__(self,sizeX,sizeY):
+		self.to_be_born = []
 		self.idx = 0L
 		self.sizeX = sizeX
 		self.sizeY = sizeY
@@ -31,13 +32,12 @@ class World:
 						'pheromones' : np.zeros((sizeX,sizeY)),
 						'rock': np.zeros((sizeX,sizeY)),
 						'water': np.zeros((sizeX,sizeY))
-
 					}
-		
+		self.cases = [[[] for j in range(self.sizeY)] for i in range(self.sizeX)]
 
 		# Generate random initialization
 		# Humans
-		self.humans = []
+		self.humans = {}
 		for _ in range(nb_foyer_humans):
 			x_foyer = int(max(10,min(sizeX-10,(2.0*np.random.random())*sizeX/2)))
 			y_foyer = int(max(10,min(sizeY-10,(2.0*np.random.random())*sizeY/2)))
@@ -53,6 +53,23 @@ class World:
 					self.board['rock'][i,j] = 1
 				if np.random.random()<(1.0-d)*proba_water:
 					self.board['water'][i,j] = 1
+		# propagate rock into mountains
+		proba_rock_propagate = 0.13
+		to_add_rock = []
+		for i in range(1,sizeX-1):
+			for j in range(1,sizeY-1):
+				if self.is_food_possible(i,j):
+					p = 0
+					for delta in [[1,0],[-1,0],[0,1],[0,-1]]:
+						i2,j2 = i,j
+						i2 += delta[0]
+						j2 += delta[1]
+						if i2>=0 and j2>=0 and i2<sizeX and j2<sizeY and self.board["rock"][i2,j2]>0:
+							p += proba_rock_propagate
+						if np.random.random()<p:
+							to_add_rock.append([i,j])
+		for a in to_add_rock:
+			self.board["rock"][a[0],a[1]] = 1
 		# propagate water into river
 		proba_water_propagate = 0.13
 		for n in range(20):
@@ -112,20 +129,26 @@ class World:
 		# rock
 
 	def create_human(self,human):
-		self.humans.append(human)	
-		self.board['humans'][int(human.x),int(human.y)]+=1
+		self.to_be_born.append(human)
+		self.cases[int(human.x)][int(human.y)].append(human.idx)
 
 
 	def get_humans_in_case(self,x,y):
 		tab= []
-		for h in self.humans:
-			if h.x==x and h.y==y:
-				tab.append(h)
+		for i in self.cases[x][y]:
+			tab.append(self.humans[i])
 		return tab
 
 	def do(self):
 		print 'pop' + str(np.sum(self.board['humans']))
 		self.do_food()
+
+		# Handle born
+		for h in self.to_be_born:
+			self.humans[h.idx] = h
+			self.board['humans'][h.x,h.y]+=1
+		self.to_be_born = []
+
 		to_remove = []
 		if np.max(self.board['humans'])>max_pop:
 			print 'maladie'
@@ -140,33 +163,36 @@ class World:
 						
 						to_remove = humans
 
+
 		pop = np.sum(self.board['humans'])
 
 		if pop>max_total_pop:
 			print 'trop de pop'
 			nb_to_kill = int(pop - max_total_pop)
-			humans = list(self.humans)
+			humans = list(self.humans.values())
 			
 			random.shuffle(humans)
 			humans = humans[0:nb_to_kill]
 			
 			[to_remove.append(h) for h in humans]
-		for idx,h in enumerate(self.humans):
-			h.stats[PV]-=1
-			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0:
-				to_remove.append(h)
 
+		for idx,i in enumerate(self.humans):
+			h = self.humans[i]
+			h.stats[PV]-=1
+			if h.stats[PV]<=0 or self.board['water'][h.x,h.y]>0 or self.board['rock'][h.x,h.y]>0:
+				to_remove.append(h)
 			else:
 				h.do()
 
 		for h in to_remove:
-			if h in self.humans:
-				self.humans.remove(h)
+			if h.idx in self.humans:
+				del self.humans[h.idx]
 				self.board['humans'][h.x,h.y]-=1
+				print h.idx, self.cases[h.x][h.y]
+				self.cases[h.x][h.y].remove(h.idx)
 
 		for i in range(self.sizeX):
 			for j in range(self.sizeY):
-				
 				self.board['pheromones'][i,j] = max(0,self.board['pheromones'][i,j]-1)
 
 	def is_food_possible(self,i,j):
