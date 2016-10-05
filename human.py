@@ -22,7 +22,7 @@ SIGHT = 2
 PV = 3
 AGE = 4
 
-
+nb_pheromones = 20
 maturity = 2
 
 debug = False
@@ -138,6 +138,9 @@ class Human:
 		assert somme==somme_end,'error somme : '+str(somme)+' '+str(somme_end)
 		# print 'moved from '+str(x_or)+','+str(y_or)+' to '+str(self.x)+','+str(self.y)
 		assert np.abs(x_or-self.x)+np.abs(y_or-self.y)<=1, "erreur norme"
+
+		# Put pheromones
+		self.world['pheromones'][x_or,y_or]+= nb_pheromones
 		
 
 	def fuck(self):
